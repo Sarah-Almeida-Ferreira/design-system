@@ -1,0 +1,77 @@
+@import "@lib/index.css";
+
+.input-field {
+  position: relative;
+  height: 60px;
+  padding-top: 20px;
+  color: var(--text);
+
+  .input-label {
+    position: absolute;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 250ms ease;
+    top: 25px;
+
+    &.focused {
+      top: 0;
+    }
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input {
+      padding: 2px 8px;
+      width: 100%;
+      font-size: 16px;
+      height: 30px;
+      border: none;
+      border-bottom: 1px solid var(--text);
+      color: var(--text);
+
+      background-color: transparent;
+      background-image: linear-gradient(to right, var(--text), var(--text));
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      background-size: 0 2px;
+      transition: background-size 200ms ease;
+
+      &:hover {
+        background-size: 100% 2px;
+        border: none;
+      }
+
+      &:focus {
+        border: none;
+        background-image: linear-gradient(
+          to right,
+          var(--primary),
+          var(--primary)
+        );
+        background-size: 100% 2px;
+        outline: none;
+      }
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 18px;
+
+      &:hover {
+        color: var(--primary-mute);
+      }
+
+      &:focus-visible {
+        outline-color: var(--primary);
+      }
+    }
+  }
+}
