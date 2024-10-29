@@ -1,0 +1,93 @@
+@import "@lib/index.css";
+
+.button {
+  display: inline-block;
+  cursor: pointer;
+  border: 0;
+  border-radius: 5px;
+  font-weight: 700;
+  line-height: 1;
+  font-family: "Roboto", sans-serif;
+  transition: all 200ms ease;
+
+  &.align-text-left {
+    text-align: left;
+  }
+
+  &.align-text-right {
+    text-align: right;
+  }
+
+  &.primary:not(.text-only) {
+    background-color: var(--primary);
+    color: white;
+
+    &:not(:disabled) {
+      &:hover,
+      &:focus {
+        background-color: var(--primary-mute);
+      }
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+  }
+
+  &.secondary {
+    color: var(--text);
+    background-color: transparent;
+
+    &:not(:disabled) {
+      &:hover,
+      &:focus,
+      &:focus-visible {
+        color: var(--primary);
+      }
+    }
+
+    &:not(.text-only) {
+      border: 1px solid var(--text);
+
+      &:not(:disabled) {
+        &:hover,
+        &:focus {
+          border-color: var(--primary);
+        }
+      }
+
+      &:focus-visible {
+        outline: 3px solid var(--primary);
+        border: none;
+      }
+    }
+  }
+
+  &.text-only {
+    background-color: transparent;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  &.small {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  &.medium {
+    padding: 11px 20px;
+    font-size: 14px;
+  }
+
+  &.large {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+
+  &.full-width {
+    width: 100%;
+  }
+}

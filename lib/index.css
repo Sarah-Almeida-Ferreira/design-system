@@ -11,4 +11,11 @@
   --primary: #25afa7;
   --primary-mute: #1e8d87;
   --text: #6A6A73;
+
+  --danger: #F56565;
+
+  :disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
 }
