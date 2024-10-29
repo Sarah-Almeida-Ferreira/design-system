@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, assert, beforeAll, afterEach } from "vitest";
 import { Input } from "@lib/components/Input";
+import { useState } from "react";
 
 describe("Input Component", () => {
     beforeAll(() => {
@@ -166,6 +167,43 @@ describe("Input Component", () => {
         await waitFor(() => {
             vi.runOnlyPendingTimersAsync();
             expect(label.classList.contains("focused")).toBeFalsy();
+        });
+    });
+
+    it("shows error when error prop is defined", async () => {
+        const handleChange = vi.fn();
+        const TestComponent = () => {
+            const [error, setError] = useState("");
+
+            return (
+                <div>
+                    <Input
+                        label="Username"
+                        name="username"
+                        id="username"
+                        value=""
+                        error={error}
+                        placeholder="Enter your username"
+                        onChange={handleChange}
+                    />
+                    <button onClick={() => setError("Input error")}>Show Error</button>
+                </div>
+            );
+        };
+
+        render(<TestComponent />);
+
+        const inputField = screen.getByTestId("input-field");
+
+        expect(inputField.classList.contains("has-error")).toBeFalsy();
+        assert.notExists(screen.queryByTestId("input-error"));
+
+        screen.getByText("Show Error").click();
+
+        await waitFor(() => {
+            vi.runOnlyPendingTimersAsync();
+            expect(inputField.classList.contains("has-error")).toBeTruthy();
+            assert.exists(screen.getByTestId("input-error"));
         });
     });
 });
