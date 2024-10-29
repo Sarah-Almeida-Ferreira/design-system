@@ -39,12 +39,12 @@
       background-size: 0 2px;
       transition: background-size 200ms ease;
 
-      &:hover {
+      &:hover:not(:disabled) {
         background-size: 100% 2px;
         border: none;
       }
 
-      &:focus {
+      &:focus:not(:disabled) {
         border: none;
         background-image: linear-gradient(
           to right,
@@ -64,14 +64,28 @@
       cursor: pointer;
       color: var(--primary);
       font-size: 18px;
+      transition: all 200ms ease;
 
       &:hover {
         color: var(--primary-mute);
       }
 
       &:focus-visible {
-        outline-color: var(--primary);
+        outline: 2px solid var(--primary);
       }
+    }
+  }
+
+  &.has-error {
+    .input {
+      border-color: var(--danger);
+    }
+    .input-label {
+      color: var(--danger);
+    }
+    .input-error {
+      font-size: small;
+      color: var(--danger);
     }
   }
 }

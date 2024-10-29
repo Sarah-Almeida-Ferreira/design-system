@@ -3,11 +3,12 @@ import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import "./index.css";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
+  error?: string;
 }
 
-export const Input = ({ id, label, type, name, placeholder, value, onChange, ...props }: InputProps) => {
+export const Input = ({ id, label, type, name, placeholder, value, error, onChange, ...props }: InputProps) => {
   const [inputValue, setInputValue] = useState(value);
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -42,7 +43,7 @@ export const Input = ({ id, label, type, name, placeholder, value, onChange, ...
   }, []);
 
   return (
-    <div className="input-field">
+    <div className={`input-field ${error ? "has-error" : ""}`} data-testid="input-field">
       <label className={`input-label ${inputValue || isFocused ? "focused" : ""}`} htmlFor={id}>
         {label}
       </label>
@@ -75,6 +76,7 @@ export const Input = ({ id, label, type, name, placeholder, value, onChange, ...
           </button>
         )}
       </div>
+      {error && <span className="input-error" data-testid="input-error">{error}</span>}
     </div>
   );
 };
