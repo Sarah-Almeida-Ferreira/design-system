@@ -8,8 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/__tests__/setup.ts",
     coverage: {
-      include: ["lib"],
-      exclude: ["lib/main.ts"],
+      include: ["lib/components"],
     },
   },
   resolve: {
