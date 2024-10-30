@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { describe, it, expect, vi, assert, beforeAll, afterEach } from "vitest";
 import { Input } from "@lib/components/Input";
 import { act, useState } from "react";
@@ -22,25 +22,44 @@ describe("Input Component", () => {
         const toggleButton = screen.getByTestId("toggle-password-button");
         const input = screen.getByLabelText("Password");
 
-        expect(input.getAttribute("type")).toBe("password");
+        expect(input).toHaveAttribute("type", "password");
 
         fireEvent.click(toggleButton);
-        expect(input.getAttribute("type")).toBe("text");
+        expect(input).toHaveAttribute("type", "text");
 
         fireEvent.click(toggleButton);
-        expect(input.getAttribute("type")).toBe("password");
+        expect(input).toHaveAttribute("type", "password");
     });
 
     it("calls onChange when input changes", () => {
         const handleChange = vi.fn();
-        render(
-            <Input label="Name" name="name" id="name" onChange={handleChange} placeholder="Type your name" />
-        );
+
+        const TestComponent = () => {
+            const [value, setValue] = useState("");
+            handleChange.mockImplementation((e) => setValue(e.target.value));
+
+            return (
+                <Input
+                    label="Username"
+                    name="username"
+                    id="username"
+                    value={value}
+                    placeholder="Enter your username"
+                    onChange={handleChange}
+                />
+            );
+        };
+
+        render(<TestComponent />);
 
         const input = screen.getByTestId("input");
-        fireEvent.input(input, { target: { value: "John" } });
+
+        act(() => {
+            fireEvent.input(input, { target: { value: "John" } });
+        });
 
         expect(handleChange).toHaveBeenCalledTimes(1);
+        expect(input).toHaveAttribute("value", "John");
     });
 
     it("displays placeholder text correctly", () => {
@@ -54,10 +73,10 @@ describe("Input Component", () => {
         );
 
         const input = screen.getByPlaceholderText("Enter your username");
-        assert.exists(input);
+        expect(input).toBeInTheDocument();
     });
 
-    it("changes label's className when input value is blank", async () => {
+    it("changes label's className when input value is blank", () => {
         const handleChange = vi.fn();
 
         render(
@@ -74,17 +93,14 @@ describe("Input Component", () => {
         const label = screen.getByText("Username");
         const input = screen.getByTestId("input");
 
-        expect(label.classList.contains("focused")).toBeTruthy();
+        expect(label).toHaveClass("focused");
 
-        fireEvent.input(input, { target: { value: "" } });
+        act(() => fireEvent.input(input, { target: { value: "" } }));
 
-        await waitFor(() => {
-            vi.runOnlyPendingTimersAsync();
-            expect(label.classList.contains("focused")).toBeFalsy();
-        });
+        expect(label).not.toHaveClass("focused");
     });
 
-    it("changes label's className when input value is not blank", async () => {
+    it("changes label's className when input value is not blank", () => {
         const handleChange = vi.fn();
 
         render(
@@ -103,15 +119,12 @@ describe("Input Component", () => {
 
         expect(label.classList.contains("focused")).toBeFalsy();
 
-        fireEvent.input(input, { target: { value: "myusername" } });
+        act(() => fireEvent.input(input, { target: { value: "myusername" } }));
 
-        await waitFor(() => {
-            vi.runOnlyPendingTimersAsync();
-            expect(label.classList.contains("focused")).toBeTruthy();
-        });
+        expect(label).toHaveClass("focused");
     });
 
-    it("changes label's className when input is focused", async () => {
+    it("changes label's className when input is focused", () => {
         const handleChange = vi.fn();
 
         render(
@@ -130,15 +143,12 @@ describe("Input Component", () => {
 
         expect(label.classList.contains("focused")).toBeFalsy();
 
-        fireEvent.focus(input);
+        act(() => fireEvent.focus(input));
 
-        await waitFor(() => {
-            vi.runOnlyPendingTimersAsync();
-            expect(label.classList.contains("focused")).toBeTruthy();
-        });
+        expect(label).toHaveClass("focused");
     });
 
-    it("changes label's className when input is blurred", async () => {
+    it("changes label's className when input is blurred", () => {
         const handleChange = vi.fn();
 
         render(
@@ -155,22 +165,16 @@ describe("Input Component", () => {
         const label = screen.getByText("Username");
         const input = screen.getByTestId("input");
 
-        fireEvent.focus(input);
+        act(() => fireEvent.focus(input));
 
-        await waitFor(() => {
-            vi.runOnlyPendingTimersAsync();
-            expect(label.classList.contains("focused")).toBeTruthy();
-        });
+        expect(label).toHaveClass("focused");
 
-        fireEvent.blur(input);
+        act(() => fireEvent.blur(input));
 
-        await waitFor(() => {
-            vi.runOnlyPendingTimersAsync();
-            expect(label.classList.contains("focused")).toBeFalsy();
-        });
+        expect(label).not.toHaveClass("focused");
     });
 
-    it("shows error when error prop is defined", async () => {
+    it("shows error when error prop is defined", () => {
         const handleChange = vi.fn();
         const TestComponent = () => {
             const [error, setError] = useState("");
@@ -202,10 +206,7 @@ describe("Input Component", () => {
             screen.getByText("Show Error").click();
         });
 
-        await waitFor(() => {
-            vi.runOnlyPendingTimersAsync();
-            expect(inputField.classList.contains("has-error")).toBeTruthy();
-            assert.exists(screen.getByTestId("input-error"));
-        });
+        expect(inputField).toHaveClass("has-error");
+        expect(screen.getByTestId("input-error")).toBeInTheDocument();
     });
 });
