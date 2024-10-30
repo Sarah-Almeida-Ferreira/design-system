@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, assert, beforeAll, afterEach } from "vitest";
 import { Input } from "@lib/components/Input";
-import { useState } from "react";
+import { act, useState } from "react";
 
 describe("Input Component", () => {
     beforeAll(() => {
@@ -198,7 +198,9 @@ describe("Input Component", () => {
         expect(inputField.classList.contains("has-error")).toBeFalsy();
         assert.notExists(screen.queryByTestId("input-error"));
 
-        screen.getByText("Show Error").click();
+        act(() => {
+            screen.getByText("Show Error").click();
+        });
 
         await waitFor(() => {
             vi.runOnlyPendingTimersAsync();
