@@ -1,0 +1,33 @@
+@import "@lib/index.css";
+
+.toast {
+    width: 100%;
+    padding: 5px 15px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    transition: all 200ms ease-in-out;
+    opacity: 0;
+
+    &.active {
+        opacity: 1;
+    }
+    &.toast-info {
+        background-color: var(--info-bg);
+    }
+    &.toast-success {
+        background-color: var(--success-bg);
+    }
+    &.toast-danger {
+        background-color: var(--danger-bg);
+    }
+    &.toast-warning {
+        background-color: var(--warning-bg);
+    }
+
+    .toast-message {
+        margin: 0;
+        margin-right: 10px;
+    }
+}
