@@ -1,4 +1,4 @@
-import { HtmlHTMLAttributes, useEffect, useState } from "react";
+import { HtmlHTMLAttributes, useEffect } from "react";
 import "./index.css";
 
 export interface ToastProps extends HtmlHTMLAttributes<HTMLDivElement> {
@@ -9,23 +9,16 @@ export interface ToastProps extends HtmlHTMLAttributes<HTMLDivElement> {
 }
 
 export const Toast = ({ message, type = "info", onClose = () => { }, duration = 30000 }: ToastProps) => {
-    const [isActive, setIsActive] = useState(false);
-
     useEffect(() => {
         const timer = setTimeout(() => {
-            setIsActive(false);
             onClose();
         }, duration);
 
         return () => clearTimeout(timer);
     }, [onClose, duration]);
 
-    useEffect(() => {
-        setIsActive(true);
-    }, []);
-
     return (
-        <div className={`toast toast-${type} ${isActive ? "active" : ""}`}>
+        <div className={`toast toast-${type}`}>
             <p className="toast-message">{message}</p>
         </div>
     );
