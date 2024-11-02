@@ -10,9 +10,17 @@
 
   --primary: #25afa7;
   --primary-mute: #1e8d87;
-  --text: #6A6A73;
+  --text: #6a6a73;
 
-  --danger: #F56565;
+  --danger: #f56565;
+  --success: #48bb78;
+  --info: #4299e1;
+  --warning: #ecc94b;
+
+  --danger-bg: rgba(245, 101, 101, 0.5);
+  --success-bg: rgba(72, 187, 120, 0.5);
+  --info-bg: rgba(66, 153, 225, 0.5);
+  --warning-bg: rgba(236, 201, 75, 0.5);
 
   :disabled {
     cursor: not-allowed;
