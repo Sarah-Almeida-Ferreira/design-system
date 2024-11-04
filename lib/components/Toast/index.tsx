@@ -1,25 +1,50 @@
-import { HtmlHTMLAttributes, useEffect } from "react";
+import { HtmlHTMLAttributes, useEffect, useState } from "react";
 import "./index.css";
 
 export interface ToastProps extends HtmlHTMLAttributes<HTMLDivElement> {
     message: string;
     duration?: number;
     type?: "info" | "success" | "danger" | "warning";
-    onClose?: () => void;
+    onClose: () => void;
 }
 
-export const Toast = ({ message, type = "info", onClose = () => { }, duration = 30000 }: ToastProps) => {
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            onClose();
-        }, duration);
+export const Toast = ({
+    message,
+    type = "info",
+    duration = 3000,
+    onClose,
+}: ToastProps) => {
+    const [isActive, setIsActive] = useState("");
+    const [timerStyle, setTimerStyle] = useState({});
 
-        return () => clearTimeout(timer);
+    useEffect(() => {
+        const timers = [
+            setTimeout(() => {
+                onClose();
+            }, duration + 300),
+            setTimeout(() => {
+                setIsActive("active");
+                setTimerStyle({
+                    width: "0%",
+                    transition: `width ${duration}ms linear`
+                });
+            }, 100),
+            setTimeout(() => {
+                setIsActive("");
+            }, duration)
+        ];
+
+        return () => {
+            timers.forEach(clearTimeout);
+            setTimerStyle({});
+        };
     }, [onClose, duration]);
 
     return (
-        <div className={`toast toast-${type}`}>
+        message &&
+        <div className={`toast toast-${type} ${isActive}`}>
             <p className="toast-message">{message}</p>
+            <div className="toast-timer" style={timerStyle} role="timer"></div>
         </div>
     );
 };

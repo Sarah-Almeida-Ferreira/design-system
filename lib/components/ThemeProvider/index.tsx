@@ -31,11 +31,10 @@ export const ThemeProvider = ({
                 useMatchMedia &&
                 window.matchMedia &&
                 window.matchMedia("(prefers-color-scheme: dark)").matches;
-
         };
 
         setTheme(isDarkTheme() ? dark : light);
-    }, [isDarkMode, dark, light]);
+    }, [isDarkMode, dark, light, useMatchMedia]);
 
     return (
         <ThemeContext.Provider value={{ light, dark }}>

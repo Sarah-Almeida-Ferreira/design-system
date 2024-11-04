@@ -1,52 +1,88 @@
-import { render, screen } from "@testing-library/react";
-import { Toast } from "@lib/components/Toast";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-
-const onCloseMock = vi.fn();
+import { render, screen, act } from "@testing-library/react";
+import { Toast, ToastProps } from "@lib/components/Toast";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 describe("Toast Component", () => {
-    beforeEach(() => {
-        vi.useFakeTimers();
-        onCloseMock.mockClear();
-    });
+    vi.useFakeTimers();
+
+    const defaultProps: ToastProps = {
+        message: "Test message",
+        duration: 3000,
+        type: "info",
+        onClose: vi.fn(),
+    };
 
     afterEach(() => {
-        vi.runOnlyPendingTimers();
-        vi.useRealTimers();
+        vi.clearAllTimers();
+        vi.clearAllMocks();
     });
 
-    test("renders with the correct message", () => {
-        render(<Toast message="Test Message" onClose={onCloseMock} />);
-        expect(screen.getByText("Test Message")).toBeInTheDocument();
+    it("renders the toast message", () => {
+        render(<Toast {...defaultProps} />);
+        const messageElement = screen.getByText("Test message");
+        expect(messageElement).toBeInTheDocument();
     });
 
-    test("applies the correct type class", () => {
-        render(<Toast message="Test Message" onClose={onCloseMock} type="success" />);
+    it("applies the correct class based on type", () => {
+        const { rerender } = render(<Toast {...defaultProps} type="success" />);
+        expect(screen.getByText("Test message").parentElement).toHaveClass("toast-success");
 
-        const toastElement = screen.getByText("Test Message").closest(".toast");
-        expect(toastElement).toHaveClass("toast-success");
+        rerender(<Toast {...defaultProps} type="danger" />);
+        expect(screen.getByText("Test message").parentElement).toHaveClass("toast-danger");
+
+        rerender(<Toast {...defaultProps} type="warning" />);
+        expect(screen.getByText("Test message").parentElement).toHaveClass("toast-warning");
     });
 
-    test("calls onClose after the specified duration", () => {
-        const duration = 3000;
-        render(<Toast message="Test Message" onClose={onCloseMock} duration={duration} />);
+    it("adds the 'active' class after 100ms", () => {
+        render(<Toast {...defaultProps} />);
+        const toastElement = screen.getByText("Test message").parentElement;
 
-        vi.advanceTimersByTime(duration);
-        expect(onCloseMock).toHaveBeenCalled();
+        expect(toastElement).not.toHaveClass("active");
+
+        act(() => {
+            vi.advanceTimersByTime(100);
+        });
+
+        expect(toastElement).toHaveClass("active");
     });
 
-    test("does not call onClose before the duration ends", () => {
-        const duration = 3000;
-        render(<Toast message="Test Message" onClose={onCloseMock} duration={duration} />);
+    it("applies the timer style with transition to 0% width", () => {
+        render(<Toast {...defaultProps} />);
+        const timerElement = screen.getByRole("timer");
 
-        vi.advanceTimersByTime(duration - 500);
-        expect(onCloseMock).not.toHaveBeenCalled();
+        act(() => {
+            vi.advanceTimersByTime(100);
+        });
+
+        expect(timerElement).toHaveStyle({
+            width: "0%",
+            transition: "width 3000ms linear",
+        });
     });
 
-    test("handles default duration correctly", () => {
-        render(<Toast message="Test Message" onClose={onCloseMock} />);
+    it("calls onClose after duration + 300ms", () => {
+        render(<Toast {...defaultProps} />);
 
-        vi.advanceTimersByTime(30000);
-        expect(onCloseMock).toHaveBeenCalled();
+        act(() => {
+            vi.advanceTimersByTime(3300);
+        });
+
+        expect(defaultProps.onClose).toHaveBeenCalled();
+    });
+
+    it("removes the 'active' class after duration", () => {
+        render(<Toast {...defaultProps} />);
+        const toastElement = screen.getByText("Test message").parentElement;
+
+        act(() => {
+            vi.advanceTimersByTime(100);
+        });
+        expect(toastElement).toHaveClass("active");
+
+        act(() => {
+            vi.advanceTimersByTime(3000);
+        });
+        expect(toastElement).not.toHaveClass("active");
     });
 });
