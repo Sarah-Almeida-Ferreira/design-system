@@ -5,14 +5,14 @@ export interface ToastProps extends HtmlHTMLAttributes<HTMLDivElement> {
     message: string;
     duration?: number;
     type?: "info" | "success" | "danger" | "warning";
-    onClose?: () => void;
+    onClose: () => void;
 }
 
 export const Toast = ({
     message,
     type = "info",
-    onClose = () => { },
-    duration = 3000
+    duration = 3000,
+    onClose,
 }: ToastProps) => {
     const [isActive, setIsActive] = useState("");
     const [timerStyle, setTimerStyle] = useState({});
@@ -44,7 +44,7 @@ export const Toast = ({
         message &&
         <div className={`toast toast-${type} ${isActive}`}>
             <p className="toast-message">{message}</p>
-            <div className="toast-timer" style={timerStyle}></div>
+            <div className="toast-timer" style={timerStyle} role="timer"></div>
         </div>
     );
 };
